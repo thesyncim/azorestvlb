@@ -28,44 +28,58 @@ func (d *Datacenter) isTagetTo(continent string) bool {
 func (d *Datacenter) DeadServers() (total, dead int) {
 	total = len(d.Servers)
 	for _, server := range d.Servers {
-		if !(&server).IsAlive() {
+		if !(server).IsAlive() {
 			dead++
 		}
 	}
 	return
 }
 
-func (d *Datacenter) addServer(domain, vid string) {
-	d.Servers = append(d.Servers, NewServer(domain, vid))
+func (d *Datacenter) addServer(domain, vid string, mbo int64, n bool) {
+	d.Servers = append(d.Servers, NewServer(domain, vid, mbo, n))
 }
 
 func (d *Datacenter) pickServer() *Server {
 	load := float32(99999)
 	sindex := 0
 	for index, server := range d.Servers {
-		log.Println(server)
 
 		if server.IsAlive() {
+			if server.Load > 90 {
+				return cloud.Datacenters[DefaultDC].pickServer()
+			}
 			if server.Load < load {
 				load = server.Load
-				log.Println("pick server", load, d.Servers)
+
 				sindex = index
-				log.Println(index, sindex)
-				log.Println(d.Servers[sindex])
+
 			}
 
 		}
 
 	}
+
 	return d.Servers[sindex]
 
 }
 
-type Cloud struct {
+type WowzaBalancer struct {
 	Datacenters map[string]*Datacenter
 }
 
-func (c *Cloud) GetDatacenterByContinent(continent string) (dc *Datacenter) {
+func (w *WowzaBalancer) GetStats() (stats map[string]int64) {
+
+	stats = make(map[string]int64)
+
+	for _, datacenter := range w.Datacenters {
+		for _, server := range datacenter.Servers {
+			stats[server.Domain] = server.BytesOut
+		}
+
+	}
+	return
+}
+func (c *WowzaBalancer) GetDatacenterByContinent(continent string) (dc *Datacenter) {
 
 	for _, datacenter := range c.Datacenters {
 		if datacenter.isTagetTo(continent) {
@@ -77,24 +91,27 @@ func (c *Cloud) GetDatacenterByContinent(continent string) (dc *Datacenter) {
 	return c.Datacenters[DefaultDC]
 }
 
-func (c *Cloud) AddDatacenter(id string, datacenter *Datacenter) {
+func (c *WowzaBalancer) AddDatacenter(id string, datacenter *Datacenter) {
 	c.Datacenters[id] = datacenter
 }
 
-func (c *Cloud) PickServerByContinent(continent string) *Server {
+func (c *WowzaBalancer) PickServerByContinent(continent string) *Server {
 	return c.GetDatacenterByContinent(continent).pickServer()
 }
 
-func (c *Cloud) getContinentByIp(Ip string) string {
+func (c *WowzaBalancer) getContinentByIp(Ip string) string {
+
+	host, _, _ := net.SplitHostPort(Ip)
 	Maxmind, err := maxminddb.Open("GeoLite2-Country.mmdb")
 	if err != nil {
 		log.Fatalf("Error: failed to opem db : %s", err)
 	}
 
 	defer Maxmind.Close()
-	ip := net.ParseIP(Ip)
+	ip := net.ParseIP(host)
 
-	mmrec, err := Maxmind.Lookup(ip)
+	var mmrec interface{}
+	err = Maxmind.Lookup(ip, &mmrec)
 
 	if err != nil {
 		log.Println("error lookup ip", err)
@@ -111,6 +128,6 @@ func (c *Cloud) getContinentByIp(Ip string) string {
 		log.Println(err)
 		return DefaultContinent
 	}
-
+	log.Println(Ip, record.Continent.Code)
 	return record.Continent.Code
 }

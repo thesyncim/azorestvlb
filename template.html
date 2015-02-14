@@ -1,43 +1,131 @@
-<!doctype html>
-<html lang="pt">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AzoresTV Directo</title>
 
+    <!-- Bootstrap -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+    .max{
+            width: 640px;
+            height: 360px;
+        }
+    .modal-dialog {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+    .modal-content {
+        height: 100%;
+        border-radius: 0;
+    }
+    .container {
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    @media (max-width: 700px) {
+        .text-center{
+            text-align: left !important;
+        }
+        .pp{
+            width: 100%;
+        }
+
+        .max{
+            width: 100%;
+            height: 100%;
+        }
+
+
+    }
+
+ 
+   
+    
+    </style>
 </head>
-<body>
 
-<div class="fb-like" data-href="https://www.facebook.com/vitecazorestv" data-width="940" data-layout="standard" data-action="like" data-show-faces="true" data-share="true">&nbsp;</div>
-<table border="0">
-<tbody>
-<tr>
-<td>
-<p><iframe src="http://www.azorestv.com/embed.php?id={{.}}&amp;w=640&amp;h=360" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:640px; height:360px;" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
-</td>
-<td><!-- BEGIN CBOX - www.cbox.ws - v001 -->
-<div id="cboxdiv" style="text-align: center; line-height: 0;">
-<div><iframe id="cboxmain4-4230858" style="border: #FFFFFF 1px solid;" name="cboxmain4-4230858" src="http://www4.cbox.ws/box/?boxid=4230858&amp;boxtag=mc17sf&amp;sec=main" frameborder="0" marginwidth="2" marginheight="2" scrolling="auto" width="300" height="360"></iframe></div>
-</div>
-</td>
-</tr>
-<tr>
-<td style="text-align: center;">
-<script type="text/javascript" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Live Page --> <ins class="adsbygoogle" style="display: inline-block; width: 640px; height: 75px;" data-ad-client="ca-pub-4012040309865265" data-ad-slot="5005284926"></ins>
-<script type="text/javascript">// <![CDATA[
-(adsbygoogle = window.adsbygoogle || []).push({});
-// ]]></script>
-</td>
-<td>
-<div><iframe id="cboxform4-4230858" style="border: #FFFFFF 1px solid; border-top: 0px;" name="cboxform4-4230858" src="http://www4.cbox.ws/box/?boxid=4230858&amp;boxtag=mc17sf&amp;sec=form" frameborder="0" marginwidth="2" marginheight="2" scrolling="no" width="300" height="75"></iframe></div>
-<!-- END CBOX --></td>
-</tr>
-</tbody>
-</table>
-<table style="height: 120px; width: 940px;" border="0" align="center">
-<tbody>
-<tr>
-<td><img src="http://azorestv.com/images/banner.png" alt="" width="940" height="120" /></td>
-</tr>
-</tbody>
-</table> 
+<body>
+    <div id="fb-root"></div>
+    <script>
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/pt_PT/all.js#xfbml=1&appId=582986108456609";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div class="container-fluid  ">
+        <div class="row  text-center">
+            <div class="fb-like pp" data-href="https://www.facebook.com/vitecazorestv" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+        </div>
+        <div class="row text-center">
+
+            <iframe src="http://www.azorestv.com/embed.php?id=88&amp;w=640&amp;h=360&amp;autoplay=1" class="max" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:640px; height:360px;" id="playerlive" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+        </div>
+       
+        
+     <!--   <div class="row text-center">
+            <img src="http://azorestv.com/images/banner.png" class="pp" alt="" width="640" height="120">
+        </div> -->
+
+
+        <!--    <div class="row">
+        <div class="col-md-6">
+            <a href="#" title="">
+                <img src="img/1.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="#" title="">
+                <img src="img/2.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="#" tite="">
+                <img src="img/3.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="#" tite="">
+                <img src="img/3.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="#" tite="">
+                <img src="img/3.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="#" tite="">
+                <img src="img/3.jpg" alt="" class="img-responsive"/>
+            </a>
+        </div>
+    </div>-->
+
+
+    </div>
+    </div>
+
 </body>
+
 </html>

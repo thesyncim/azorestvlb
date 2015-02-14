@@ -1,16 +1,22 @@
 package main
 
 import (
-
-	//"fmt"
+	"fmt"
 	"html/template"
 	//"io/ioutil"
-
+	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
-var cloud *Cloud
+const (
+	bandwidthGold   = 22222222 //500Mb
+	bandwidthSilver = 22222222 //177Mb
+)
+
+var cloud *WowzaBalancer
 
 type httpHandler struct {
 	templateCache *template.Template
@@ -19,7 +25,24 @@ type httpHandler struct {
 func (lb *httpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	co := cloud.getContinentByIp(r.RemoteAddr)
 	VID := cloud.PickServerByContinent(co).VID
-	err := lb.templateCache.ExecuteTemplate(rw, "template.html", VID)
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	if strings.Contains(r.URL.Path, "@stats") {
+		b, err := json.MarshalIndent(cloud.GetStats(), "", "  ")
+		if err != nil {
+			log.Println("error:", err)
+		}
+		var total int64
+		for _, server := range cloud.GetStats() {
+			total += server
+		}
+		rw.Write(append(b, []byte(strconv.Itoa(int(total)))...))
+		return
+	}
+
+	a := `<div class="desktop"><iframe style="border: none; overflow: hidden; width: 720px; height: 405px;" src="http://www.azorestv.com/embed.php?id=%s&amp;w=720&amp;h=405" frameborder="0" scrolling="no" width="320" height="240"></iframe></div>
+<div class="mobile"><iframe style="border: none; overflow: hidden; width: 320px; height: 180px;" src="http://www.azorestv.com/embed.php?id=%s&amp;w=320&amp;h=180" frameborder="0" scrolling="no" width="320" height="240"></iframe></div>
+`
+	_, err := fmt.Fprint(rw, fmt.Sprintf(a, VID, VID))
 	if err != nil {
 		log.Println(err)
 	}
@@ -27,26 +50,26 @@ func (lb *httpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	cloud = new(Cloud)
+	cloud = new(WowzaBalancer)
 	cloud.Datacenters = make(map[string]*Datacenter)
 	cloud.AddDatacenter(
 		"EU",
 		&Datacenter{
 			TargetContinents: []string{"EU", "AF", "AS"},
 			Servers: []*Server{
-				NewServer("wms1.azorestv.com", "110"),
-				NewServer("wms2.azorestv.com", "112"),
+				NewServer("azorestv.com", "410", bandwidthSilver, false),
+				NewServer("192.99.78.97", "799", bandwidthSilver, true),
 			},
 		})
 
-	//cloud.AddDatacenter(
-	//	"USA",
-	//	&Datacenter{
-	//		TargetContinents: []string{"OC", "AN", "SA", "NA"},
-	//		Servers: []*Server{
-	//			NewServer("wms2.azorestv.com", "112"),
-	//		},
-	//	})
+	cloud.AddDatacenter(
+		"USA",
+		&Datacenter{
+			TargetContinents: []string{"OC", "AN", "SA", "NA"},
+			Servers: []*Server{
+				NewServer("192.99.78.97", "799", bandwidthSilver, true),
+			},
+		})
 	var err error
 
 	lb := new(httpHandler)
@@ -59,6 +82,6 @@ func main() {
 
 	http.Handle("/", lb)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 
 }

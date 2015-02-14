@@ -1,0 +1,1 @@
+nohup ./viteclb > log.out &

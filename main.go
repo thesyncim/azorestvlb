@@ -37,6 +37,8 @@ func (lb *httpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		}
 		rw.Write(append(b, []byte(strconv.Itoa(int(total)))...))
 		return
+	} else if strings.Contains(r.URL.Path, "mobile") {
+		VID = "410"
 	}
 
 	a := `<div class="desktop"><iframe style="border: none; overflow: hidden; width: 720px; height: 405px;" src="http://www.azorestv.com/embed.php?id=%s&amp;w=720&amp;h=405" frameborder="0" scrolling="no" width="320" height="240"></iframe></div>
